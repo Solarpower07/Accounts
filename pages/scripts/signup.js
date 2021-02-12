@@ -4,6 +4,8 @@
 //accounts.restore() loads the accounts saved to your storage (last time it was saved, such as when the page loaded)
 //accounts.save() saves the accounts you currently have to the local storage.
 
+//Build 2 - This is a prototype build without the shortcut for the HTML DOM access, hopefully this should resolve some issues.
+
 var accounts = {
     userList: [],
     emailList: [],
@@ -38,11 +40,6 @@ var accounts = {
         }
     }
 };
-var connections = {
-    page: {
-        account_output: null
-    }
-};
 function getCookie(cname) {
   var name = cname + "=";
   var decodedCookie = decodeURIComponent(document.cookie);
@@ -74,7 +71,6 @@ window.onload = function() {
     accounts.stored = JSON.parse(localStorage.accounts);
     accounts.userList = JSON.parse(localStorage.userList);
     accounts.emailList = JSON.parse(localStorage.emailList);
-    connections.page.account_output = document.getElementById("form-error");
 };
 window.onbeforeunload = function () {
     localStorage.accounts = JSON.stringify(accounts.stored);
@@ -98,39 +94,39 @@ function form_submit () {
             username: form.user,
             password: form.password
         };
-        connections.page.account_output.style.display = "none";
+        document.getElementById("form-error").style.display = "none";
         console.log("Account created with the email \"" + form.email + "\", the username of \"" + accounts.stored[form.email].username + "\", and a password length of " + form.password.length + ".");
         alert("Account created with the email \"" + form.email + "\", the username of \"" + accounts.stored[form.email].username + "\", and a password length of " + form.password.length + ". It is saved locally, not to a database.");
         createCookie("connected",accounts.stored[form.email],1440);
     }
     else if (accounts.emailList.includes(form.email)) {
-        connections.page.account_output.style.display = "inline-block";
-        connections.page.account_output.innerHTML = "An account already exists with that email address.";
+        document.getElementById("form-error").style.display = "inline-block";
+        document.getElementById("form-error").innerHTML = "An account already exists with that email address.";
         console.error("The email address \"" + form.email + "\" is already created with the username " + accounts[form.email].username + ".");
     }
     else if (accounts.userList.includes(form.user)) {
-        connections.page.account_output.style.display = "inline-block";
-        connections.page.account_output.innerHTML = "An account already exists with that username.";
+        document.getElementById("form-error").style.display = "inline-block";
+        document.getElementById("form-error").innerHTML = "An account already exists with that username.";
         console.error("The username \"" + form.user + "\" is already in the array at the index of " + accounts.userList.indexOf(form.user) + ".");
     }
     else if (form.email === "") {
-        connections.page.account_output.style.display = "inline-block";
-        connections.page.account_output.innerHTML = "Please enter an email address.";
+        document.getElementById("form-error").style.display = "inline-block";
+        document.getElementById("form-error").innerHTML = "Please enter an email address.";
         console.error("Email address not entered.");
     }
     else if (form.user === "") {
-        connections.page.account_output.style.display = "inline-block";
-        connections.page.account_output.innerHTML = "Please enter a username.";
+        document.getElementById("form-error").style.display = "inline-block";
+        document.getElementById("form-error").innerHTML = "Please enter a username.";
         console.error("Username not entered.");
     }
     else if (form.password.length < 6) {
-        connections.page.account_output.style.display = "inline-block";
-        connections.page.account_output.innerHTML = "Passwords must be at least 6 characters in length.";
+        document.getElementById("form-error").style.display = "inline-block";
+        document.getElementById("form-error").innerHTML = "Passwords must be at least 6 characters in length.";
         console.error("Password length is " + form.password.length + ", minimum length is 6.");
     }
     else {
-        connections.page.account_output.style.display = "inline-block";
-        connections.page.account_output.innerHTML = "An unexpected error has occurred. Please try again.";
+        document.getElementById("form-error").style.display = "inline-block";
+        document.getElementById("form-error").innerHTML = "An unexpected error has occurred. Please try again.";
         console.error("Error creating account.");
     }
 }
